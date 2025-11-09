@@ -56,7 +56,15 @@ services:
       start_period: 60s
     volumes:
       - ./docker/db/data:/var/lib/mysql:rw
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
 
 volumes:
   caddy_data:
