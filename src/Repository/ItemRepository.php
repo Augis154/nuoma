@@ -24,6 +24,16 @@ class ItemRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function search(string $term): array
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.name LIKE :term OR i.description LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
+            ->orderBy('i.created_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Item[] Returns an array of Item objects
     //     */

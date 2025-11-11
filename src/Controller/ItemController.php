@@ -15,9 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ItemController extends AbstractController
 {
     #[Route('/objects', name: 'app_items')]
-    public function index(ItemRepository $itemRepository): Response
+    public function index(Request $request, ItemRepository $itemRepository): Response
     {
-        $items = $itemRepository->findAll();
+        // $items = $itemRepository->findAll();
+
+        if ($searchTerm = $request->query->get('q')) {
+            $items = $itemRepository->search($searchTerm);
+        } else {
+            $items = $itemRepository->findAll();
+        }
 
         return $this->render('item/index.html.twig', [
             'items' => $items,

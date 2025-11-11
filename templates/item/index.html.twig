@@ -8,6 +8,16 @@
     <h1>Objektai nuomai</h1>
 
     <div class="container">
+        <form class="d-flex justify-content-end mt-4" role="search">
+            <div class="input-group" style="width: 300px;">
+                <input class="form-control form-control-md" type="search" name="q" placeholder="Ieškoti..." aria-label="Search">
+                <button class="btn btn-primary" type="submit">
+                    {# <i class="fa-solid fa-magnifying-glass search-icon"></i> #}
+                    <i class="bi bi-search search-icon"></i>
+                </button>
+            </div>
+        </form>
+
         <div class="row row-cols-4 justify-content-start">
             {% for item in items %}
             <div class="col">
