@@ -62,6 +62,12 @@ class NewItemFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Įkelkite bent vieną nuotrauką',
                     ]),
+                    new Range([
+                        'min' => 1,
+                        'max' => 5,
+                        'minMessage' => 'Įkelkite bent {{ limit }} nuotrauką',
+                        'maxMessage' => 'Negalite įkelti daugiau nei {{ limit }} nuotraukų',
+                    ]),
                     new All([
                         'constraints' => [
                             new File([
