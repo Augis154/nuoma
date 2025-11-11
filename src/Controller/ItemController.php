@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Item;
+use App\Entity\Review;
 use App\Form\NewItemFormType;
+use App\Form\ReviewFormType;
 use App\Repository\ItemRepository;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,10 +33,28 @@ final class ItemController extends AbstractController
     }
 
     #[Route('/objects/{id}', name: 'app_item')]
-    public function item(Item $item): Response
+    public function item(Item $item, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $review = new Review();
+        $reviewForm = $this->createForm(ReviewFormType::class, $review);
+        $reviewForm->handleRequest($request);
+
+        if ($reviewForm->isSubmitted() && $reviewForm->isValid()) {
+            $review->setItem($item);
+            $review->setCreatedAt(new \DateTimeImmutable());
+
+            $user = $this->getUser();
+            $review->setCreatedBy($user);
+
+            $entityManager->persist($review);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_item', ['id' => $item->getId()]);
+        }
+
         return $this->render('item/item.html.twig', [
             'item' => $item,
+            'reviewForm' => $reviewForm,
         ]);
     }
 
