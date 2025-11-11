@@ -54,8 +54,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 60s
-    volumes:
-      - ./docker/db/data:/var/lib/mysql:rw
+    # volumes:
+    #   - ./docker/db/data:/var/lib/mysql:rw
   ###< doctrine/doctrine-bundle ###
 
   phpmyadmin:

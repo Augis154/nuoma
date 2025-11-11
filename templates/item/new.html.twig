@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sukurti naują objektą{% endblock %}
+
+{% block body %}
+<div class="container mt-4" style="display: flex; flex-direction: column; align-items: center;">
+    <h1>Sukurti naują objektą</h1>
+
+    <div class="container-sm mt-4" style="max-width: 600px;">
+        {{ form_start(newItemForm) }}
+            <div class="mb-3" style="display: flex; gap: 1rem;">
+                {{ form_row(newItemForm.name, {
+                    label: 'Pavadinimas'
+                }) }}
+
+                {{ form_row(newItemForm.price, {
+                    label: 'Kaina'
+                }) }}
+
+            </div>
+            {{ form_row(newItemForm.images, {
+                label: 'Nuotraukos (JPEG arba PNG formatas)'
+            }) }}
+            {{ form_row(newItemForm.description, {
+                label: 'Aprašymas'
+            }) }}
+
+
+            <button type="submit" class="btn btn-primary">Sukurti</button>
+        {{ form_end(newItemForm) }}
+    </div>
+</div>
+{% endblock %}

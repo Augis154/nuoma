@@ -1,4 +1,5 @@
 docker/db/*
+public/uploads/images/*
 
 ###> symfony/framework-bundle ###
 /.env.local
