@@ -7,35 +7,33 @@
 <div class="container mt-4">
     <h1>Objektai nuomai</h1>
 
-    <div class="container">
-        <form class="d-flex justify-content-end mt-4" role="search">
-            <div class="input-group" style="width: 300px;">
-                <input class="form-control form-control-md" type="search" name="q" placeholder="Ieškoti..." aria-label="Search">
-                <button class="btn btn-primary" type="submit">
-                    {# <i class="fa-solid fa-magnifying-glass search-icon"></i> #}
-                    <i class="bi bi-search search-icon"></i>
-                </button>
-            </div>
-        </form>
+    <form class="d-flex justify-content-end mt-4" role="search">
+        <div class="input-group" style="width: 300px;">
+            <input class="form-control form-control-md" type="search" name="q" placeholder="Ieškoti..." aria-label="Search">
+            <button class="btn btn-primary" type="submit">
+                {# <i class="fa-solid fa-magnifying-glass search-icon"></i> #}
+                <i class="bi bi-search search-icon"></i>
+            </button>
+        </div>
+    </form>
 
-        <div class="row row-cols-4 justify-content-start">
-            {% for item in items %}
-            <div class="col">
-                <div class="card" style="width: 18rem; margin-top: 2rem;">
-                    <img src="{{ asset('uploads/images/' ~ item.images[0]) }}" class="card-img-top" alt="Image of {{ item.name }}" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ item.name }}</h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">Kaina: {{ item.price }} EUR</h6>
-                        {# <div class="mb-2 text-muted">Kaina: {{ item.price }} EUR</div> #}
-                        <div class="card-text mb-2 text-truncate">
-                            {{ item.description }}
-                        </div>
-                        <a href="{{ path('app_item', {'id': item.id}) }}" class="btn btn-secondary">Žiūrėti detales</a>
+    <div class="row row-cols-4 justify-content-start">
+        {% for item in items %}
+        <div class="col">
+            <div class="card" style="width: 18rem; margin-top: 2rem;">
+                <img src="{{ asset('uploads/images/' ~ item.images[0]) }}" class="card-img-top" alt="Image of {{ item.name }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">Kaina: {{ item.price }} EUR</h6>
+                    {# <div class="mb-2 text-muted">Kaina: {{ item.price }} EUR</div> #}
+                    <div class="card-text mb-2 text-truncate">
+                        {{ item.description }}
                     </div>
+                    <a href="{{ path('app_item', {'id': item.id}) }}" class="btn btn-secondary">Žiūrėti detales</a>
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
