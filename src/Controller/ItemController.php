@@ -13,10 +13,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ItemController extends AbstractController
 {
-    #[Route('/objects', name: 'app_items')]
+    #[Route('/', name: 'app_items')]
     public function index(Request $request, ItemRepository $itemRepository): Response
     {
         // $items = $itemRepository->findAll();
@@ -58,6 +59,7 @@ final class ItemController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_LENDER')]
     #[Route('/object/new', name: 'app_item_new')]
     public function new(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
     {

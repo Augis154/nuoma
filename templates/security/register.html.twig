@@ -1,29 +1,25 @@
 {% extends 'base.html.twig' %}
 {# {% form_theme registrationForm 'bootstrap_5_layout.html.twig' %} #}
 
-{% block title %}Registruotis{% endblock %}
+{% block title %}
+    Registruotis
+{% endblock %}
 
 {% block body %}
-<div class="container mt-4" style="display: flex; flex-direction: column; align-items: center;">
-    <h1>Registruotis</h1>
+    <div class="container mt-4" style="display: flex; flex-direction: column; align-items: center;">
+        <h1>Registruotis</h1>
 
-    {{ form_errors(registrationForm) }}
-    <div class="container-sm mt-4" style="max-width: 400px;">
-        {{ form_start(registrationForm) }}
-            {{ form_row(registrationForm.username, {
-                label: 'Vartotojo vardas'
-            }) }}
+        {{ form_errors(registrationForm) }}
+        <div class="container-sm mt-4" style="max-width: 400px;">
+            {{ form_start(registrationForm) }}
+            {{ form_row(registrationForm.username, { label: 'Vartotojo vardas' }) }}
 
-            {{ form_row(registrationForm.email, {
-                label: 'El. paštas'
-            }) }}
+            {{ form_row(registrationForm.email, { label: 'El. paštas' }) }}
 
-            {{ form_row(registrationForm.plainPassword, {
-                label: 'Slaptažodis'
-            }) }}
+            {{ form_row(registrationForm.plainPassword, { label: 'Slaptažodis' }) }}
 
             <button type="submit" class="btn btn-primary">Registruotis</button>
-        {{ form_end(registrationForm) }}
+            {{ form_end(registrationForm) }}
+        </div>
     </div>
-</div>
 {% endblock %}

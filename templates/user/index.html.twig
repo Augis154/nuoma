@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Naudotojas
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4" style="max-width: 600px;">
+        <h1>
+            Labas
+            {{ user.username }}
+        </h1>
+
+        {# <p>Tavo vartotojo el. paštas yra
+        <code>{{ user.email }}</code>.</p>
+
+        <p>
+        Tu turi šias roles:
+        </p>
+        <ul>
+        {% for role in user.roles %}
+        <li>
+        <code>{{ role }}</code>
+        </li>
+        {% endfor %}
+        </ul> #}
+
+        {# <form method="post" action="{{ path('app_logout') }}">
+        <button type="submit" class="btn btn-primary">Atsijungti</button>
+        </form> #}
+
+        {# <h2 class="mt-4">Redaguoti vartotojo informaciją</h2> #}
+
+        {{ form_start(editUserForm) }}
+        {{ form_row(editUserForm.username, { label: 'Vartotojo vardas' }) }}
+
+        {{ form_row(editUserForm.email, { label: 'El. paštas' }) }}
+
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ form_row(editUserForm.roles, { label: 'Rolės' }) }}
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Pakeisti</button>
+        {{ form_end(editUserForm) }}
+    </div>
+{% endblock %}

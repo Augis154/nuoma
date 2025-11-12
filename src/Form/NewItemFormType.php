@@ -65,8 +65,9 @@ class NewItemFormType extends AbstractType
                     new Range([
                         'min' => 1,
                         'max' => 5,
-                        'minMessage' => 'Įkelkite bent {{ limit }} nuotrauką',
-                        'maxMessage' => 'Negalite įkelti daugiau nei {{ limit }} nuotraukų',
+                        'notInRangeMessage' => 'Galite įkelti nuo {{ min }} iki {{ max }} nuotraukų',
+                        // 'minMessage' => 'Įkelkite bent {{ limit }} nuotrauką',
+                        // 'maxMessage' => 'Negalite įkelti daugiau nei {{ limit }} nuotraukų',
                     ]),
                     new All([
                         'constraints' => [
