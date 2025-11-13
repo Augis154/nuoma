@@ -28,17 +28,18 @@ final class UserController extends AbstractController
                 return $this->redirectToRoute('app_user', ['id' => $this->getUser()->getUserIdentifier()]);
             }
         }
-        
+
         $editUserForm->handleRequest($request);
 
         if ($editUserForm->isSubmitted() && $editUserForm->isValid()) {
-            $role = $editUserForm->get('roles')->getData();
+            if ($editUserForm->has('roles')) {
+                $role = $editUserForm->get('roles')->getData();
 
-            if ($role) {
-                $user->setRoles(array($role));
+                if ($role) {
+                    $user->setRoles(array($role));
+                }
             }
 
-            // $editUserForm->getData();
             $entityManager->persist($user);
             $entityManager->flush();
         }

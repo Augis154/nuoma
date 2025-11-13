@@ -40,7 +40,7 @@ class EditUserFormType extends AbstractType
             ])
             ->add('roles', ChoiceType::class, [
                 'mapped' => false,
-                'required' => false,
+                'required' => true,
                 'choices' => [
                     'Naudotojas' => 'ROLE_USER',
                     'Nuomotojas' => 'ROLE_LENDER',
