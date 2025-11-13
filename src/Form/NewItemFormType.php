@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\Range;
 
 class NewItemFormType extends AbstractType
@@ -62,12 +63,9 @@ class NewItemFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Įkelkite bent vieną nuotrauką',
                     ]),
-                    new Range([
-                        'min' => 1,
+                    new Count([
                         'max' => 5,
-                        'notInRangeMessage' => 'Galite įkelti nuo {{ min }} iki {{ max }} nuotraukų',
-                        // 'minMessage' => 'Įkelkite bent {{ limit }} nuotrauką',
-                        // 'maxMessage' => 'Negalite įkelti daugiau nei {{ limit }} nuotraukų',
+                        'maxMessage' => 'Negalite įkelti daugiau nei {{ limit }} nuotraukų',
                     ]),
                     new All([
                         'constraints' => [

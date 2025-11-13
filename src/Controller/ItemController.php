@@ -78,7 +78,7 @@ final class ItemController extends AbstractController
                 }
             }
 
-            // $item->setImages($form->get('images')->getData());
+            $item->setCreatedBy($this->getUser());
             $item->setCreatedAt(new \DateTimeImmutable());
             $item->setUpdatedAt(new \DateTimeImmutable());
 

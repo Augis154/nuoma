@@ -11,7 +11,7 @@
         <div id="imageCarousel" class="carousel slide" style="width: 400px; margin-bottom: 1rem;" data-bs-ride="carousel">
             <div class="carousel-inner">
                 {% for image in item.images %}
-                <div class="carousel-item {% if loop.index0 == 0 %}{% endif %}">
+                <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
                         <img src="{{ asset('uploads/images/' ~ image) }}" alt="Image of {{ item.name }}" style="width: 400px; height: 300px; object-fit: cover;" />
                     </div>
                 {% endfor %}
@@ -20,7 +20,7 @@
             {% if (item.images|length) > 1 %}
                 <div class="carousel-indicators">
                     {% for image in item.images %}
-                    <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.index0 == 0 %}{% endif %}" aria-current="true" aria-label="Image {{ loop.index }}"></button>
+                    <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.index0 == 0 %}active{% endif %}" aria-current="true" aria-label="Image {{ loop.index }}"></button>
                     {% endfor %}
                 </div>
 
@@ -37,6 +37,12 @@
 
         <p>Kaina: {{ item.price }} EUR</p>
         <p>Aprašymas: {{ item.description }}</p>
+
+        <div class="text-body-secondary" style="font-size: 0.9rem;">
+            <p style="margin: 0;">Sukūrė: <a href="{{ path('app_user_objects', { id: item.createdBy.id }) }}">{{ item.createdBy.username }}</a></p>
+            <p style="margin: 0;">Sukurta: {{ item.createdAt|date('Y-m-d H:i:s') }}</p>
+            <p style="margin: 0;">Atnaujinta: {{ item.updatedAt|date('Y-m-d H:i:s') }}</p>
+        </div>
 
         <div class="mt-4">
             <h4>Atsiliepimai</h4>

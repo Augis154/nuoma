@@ -51,9 +51,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'created_by', orphanRemoval: true)]
     private Collection $reviews;
 
+    /**
+     * @var Collection<int, Item>
+     */
+    #[ORM\OneToMany(targetEntity: Item::class, mappedBy: 'created_by', orphanRemoval: true)]
+    private Collection $items;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+        $this->items = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -80,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->id;
     }
 
     public function getUsername(): ?string
@@ -189,6 +196,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
             // set the owning side to null (unless already changed)
             if ($review->getCreatedBy() === $this) {
                 $review->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Item>
+     */
+    public function getItems(): Collection
+    {
+        return $this->items;
+    }
+
+    public function addItem(Item $item): static
+    {
+        if (!$this->items->contains($item)) {
+            $this->items->add($item);
+            $item->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItem(Item $item): static
+    {
+        if ($this->items->removeElement($item)) {
+            // set the owning side to null (unless already changed)
+            if ($item->getCreatedBy() === $this) {
+                $item->setCreatedBy(null);
             }
         }
 

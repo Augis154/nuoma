@@ -12,12 +12,12 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class EditUserFormType extends AbstractType
 {
-    private array $role_names = [
-        'ROLE_USER' => 'Naudotojas',
-        'ROLE_LENDER' => 'Nuomotojas',
-        'ROLE_MODERATOR' => 'Kontrolierius',
-        'ROLE_ADMIN' => 'Administratorius',
-    ];
+    // private array $role_names = [
+    //     'ROLE_USER' => 'Naudotojas',
+    //     'ROLE_LENDER' => 'Nuomotojas',
+    //     'ROLE_MODERATOR' => 'Kontrolierius',
+    //     'ROLE_ADMIN' => 'Administratorius',
+    // ];
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

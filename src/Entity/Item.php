@@ -43,6 +43,10 @@ class Item
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'item', orphanRemoval: true)]
     private Collection $reviews;
 
+    #[ORM\ManyToOne(inversedBy: 'items')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $created_by = null;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -158,6 +162,18 @@ class Item
                 $review->setItem(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->created_by;
+    }
+
+    public function setCreatedBy(?User $created_by): static
+    {
+        $this->created_by = $created_by;
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Item;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,14 +25,29 @@ class ItemRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function search(string $term): array
+    public function findByCreatedBy(User $created_by): array
     {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.name LIKE :term OR i.description LIKE :term')
-            ->setParameter('term', '%' . $term . '%')
+         return $this->createQueryBuilder('i')
+            ->andWhere('i.created_by = :created_by')
+            ->setParameter('created_by', $created_by->getId(), 'uuid')
             ->orderBy('i.created_at', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function search(string $term, ?User $created_by = null): array
+    {
+        $qb = $this->createQueryBuilder('i')
+            ->andWhere('i.name LIKE :term OR i.description LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
+            ->orderBy('i.created_at', 'DESC');
+
+        if ($created_by) {
+            $qb->andWhere('i.created_by = :created_by')
+                ->setParameter('created_by', $created_by->getId(), 'uuid');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     //    /**

@@ -31,6 +31,8 @@
 
         {# <h2 class="mt-4">Redaguoti vartotojo informaciją</h2> #}
 
+        <a href="{{ path('app_user_objects', {'id': user.id}) }}">Mano skelbimai</a>
+
         {{ form_start(editUserForm) }}
         {{ form_row(editUserForm.username, { label: 'Vartotojo vardas' }) }}
 
@@ -40,7 +42,9 @@
             {{ form_row(editUserForm.roles, { label: 'Rolės' }) }}
         {% endif %}
 
-        <button type="submit" class="btn btn-primary">Pakeisti</button>
+        {% if user.id == app.user.id or is_granted('ROLE_ADMIN') %}
+            <button type="submit" class="btn btn-primary">Pakeisti</button>
+        {% endif %}
         {{ form_end(editUserForm) }}
     </div>
 {% endblock %}
