@@ -27,6 +27,17 @@ class FileUploader
 
         return $fileName;
     }
+    
+    public function delete(string $fileName): bool
+    {
+        $filePath = $this->getTargetDirectory() . '/' . $fileName;
+
+        if (file_exists($filePath)) {
+            return unlink($filePath);
+        }
+
+        return false;
+    }
 
     public function getTargetDirectory(): string
     {

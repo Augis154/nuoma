@@ -92,4 +92,22 @@ final class ItemController extends AbstractController
             'newItemForm' => $form,
         ]);
     }
+
+    #[Route('/object/{id}', name: 'app_item_delete', methods: ['DELETE'])]
+    public function delete(Request $request, Item $item, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_LENDER');
+
+        if ($this->isCsrfTokenValid('delete' . $item->getId(), $request->request->get('_token'))) {
+            // Delete associated images
+            foreach ($item->getImages() as $image) {
+                $fileUploader->delete($image);
+            }
+
+            $entityManager->remove($item);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_items');
+    }
 }

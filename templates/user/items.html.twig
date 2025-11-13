@@ -29,6 +29,16 @@
                             {# <div class="mb-2 text-muted">Kaina: {{ item.price }} EUR</div> #}
                             <div class="card-text mb-2 text-truncate">{{ item.description }}</div>
                             <a href="{{ path('app_item', { id: item.id }) }}" class="btn btn-secondary">Žiūrėti detales</a>
+
+
+                            {% if app.user == user %}
+                                <form method="delete" action="{{ path('app_item_delete', { id: item.id }) }}" onsubmit="return confirm('Ar tikrai norite ištrinti šį objektą?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                                    <button class="btn btn-danger m-2" type="submit">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
