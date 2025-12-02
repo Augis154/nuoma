@@ -18,40 +18,56 @@ class ItemRepository extends ServiceEntityRepository
         parent::__construct($registry, Item::class);
     }
 
-    public function findAll(): array
+    public function findAll(?string $category = null): array
     {
-        return $this->createQueryBuilder('i')
+        $qb = $this->createQueryBuilder('i')
             ->andWhere('i.status = :status')
             ->setParameter('status', ItemStatus::AVAILABLE)
-            ->orderBy('i.created_at', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('i.created_at', 'DESC');
+
+        if ($category) {
+            $qb->andWhere('i.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
-    public function findByCreatedBy(User $created_by): array
+    public function findByCreatedBy(User $created_by, ?string $category = null): array
     {
-         return $this->createQueryBuilder('i')
+        $qb = $this->createQueryBuilder('i')
             ->andWhere('i.created_by = :created_by')
             // ->andWhere('i.status = :status')
             ->setParameter('created_by', $created_by->getId(), 'uuid')
             // ->setParameter('status', ItemStatus::AVAILABLE)
-            ->orderBy('i.created_at', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('i.created_at', 'DESC');
+
+        if ($category) {
+            $qb->andWhere('i.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
-    public function search(string $term, ?User $created_by = null): array
+    public function search(string $term, ?string $category = null, ?User $created_by = null): array
     {
         $qb = $this->createQueryBuilder('i')
             ->andWhere('i.name LIKE :term OR i.description LIKE :term')
-            // ->andWhere('i.status = :status')
             ->setParameter('term', '%' . $term . '%')
-            // ->setParameter('status', ItemStatus::AVAILABLE)
             ->orderBy('i.created_at', 'DESC');
 
         if ($created_by) {
             $qb->andWhere('i.created_by = :created_by')
                 ->setParameter('created_by', $created_by->getId(), 'uuid');
+        } else {
+            $qb->andWhere('i.status = :status')
+                ->setParameter('status', ItemStatus::AVAILABLE);
+        }
+
+        if ($category) {
+            $qb->andWhere('i.category = :category')
+                ->setParameter('category', $category);
         }
 
         return $qb->getQuery()->getResult();

@@ -37,7 +37,11 @@
         </div>
 
         <p>Kaina: {{ item.price }} EUR</p>
-        <p>Aprašymas: {{ item.description }}</p>
+        <p>Kategorija: {{ categoryName }}</p>
+
+        {% if item.description|length > 0 %}
+            <p>Aprašymas: {{ item.description }}</p>
+        {% endif %}
 
         <div class="text-body-secondary" style="font-size: 0.9rem;">
             <p style="margin: 0;">Sukūrė: <a href="{{ path('app_user_objects', { id: item.createdBy.id }) }}">{{ item.createdBy.username }}</a></p>

@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Enum\ItemStatus;
+use App\Enum\ItemCategory;
 
 final class ItemController extends AbstractController
 {
@@ -24,11 +25,13 @@ final class ItemController extends AbstractController
     public function index(Request $request, ItemRepository $itemRepository): Response
     {
         // $items = $itemRepository->findAll();
+        $category = $request->query->get('category');
+        $searchTerm = $request->query->get('q');
 
-        if ($searchTerm = $request->query->get('q')) {
-            $items = $itemRepository->search($searchTerm);
+        if ($searchTerm) {
+            $items = $itemRepository->search($searchTerm, $category);
         } else {
-            $items = $itemRepository->findAll();
+            $items = $itemRepository->findAll($category);
         }
 
         return $this->render('item/index.html.twig', [
@@ -56,9 +59,33 @@ final class ItemController extends AbstractController
             return $this->redirectToRoute('app_item', ['id' => $item->getId()]);
         }
 
+        switch ($item->getCategory()) {
+            case ItemCategory::WORK:
+                $categoryName = 'Darbo įrankiai';
+                break;
+            case ItemCategory::TABLE:
+                $categoryName = 'Stalo įrankiai';
+                break;
+            case ItemCategory::ARTS:
+                $categoryName = 'Meno įrankiai';
+                break;
+            case ItemCategory::AGRO:
+                $categoryName = 'Žemės ūkio įrankiai';
+                break;
+            case ItemCategory::LEASURE:
+                $categoryName = 'Laisvalaikio įrankiai';
+                break;
+            case ItemCategory::OTHER:
+                $categoryName = 'Kiti įrankiai';
+                break;
+            default:
+                $categoryName = 'Nežinoma kategorija';
+        }
+
         return $this->render('item/item.html.twig', [
             'item' => $item,
             'reviewForm' => $reviewForm,
+            'categoryName' => $categoryName,
         ]);
     }
 
@@ -104,6 +131,10 @@ final class ItemController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $item->setCreatedBy($this->getUser());
+            $item->setStatus(ItemStatus::AVAILABLE);
+            $item->setCreatedAt(new \DateTimeImmutable());
+            $item->setUpdatedAt(new \DateTimeImmutable());
 
             $images = $form->get('images')->getData();
             if ($images) {
@@ -112,10 +143,6 @@ final class ItemController extends AbstractController
                     $item->addImage($imageFileName);
                 }
             }
-
-            $item->setCreatedBy($this->getUser());
-            $item->setCreatedAt(new \DateTimeImmutable());
-            $item->setUpdatedAt(new \DateTimeImmutable());
 
             $entityManager->persist($item);
             $entityManager->flush();

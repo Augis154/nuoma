@@ -54,10 +54,12 @@ final class UserController extends AbstractController
     #[Route('/user/{id}/objects', name: 'app_user_objects')]
     public function objects(Request $request, User $user, ItemRepository $itemRepository): Response
     {
+
+        $category = $request->query->get('category');
         if ($searchTerm = $request->query->get('q')) {
-            $items = $itemRepository->search($searchTerm, $user);
+            $items = $itemRepository->search($searchTerm, $category, $user);
         } else {
-            $items = $itemRepository->findByCreatedBy($user);
+            $items = $itemRepository->findByCreatedBy($user, $category);
         }
 
         return $this->render('user/items.html.twig', [

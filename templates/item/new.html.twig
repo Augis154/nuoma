@@ -15,6 +15,7 @@
             </div>
             {{ form_row(newItemForm.images, { label: 'Nuotraukos (JPEG arba PNG formatas)' }) }}
             {{ form_row(newItemForm.description, { label: 'Aprašymas' }) }}
+            {{ form_row(newItemForm.category, { label: 'Kategorija' }) }}
 
             <button type="submit" class="btn btn-primary">Sukurti</button>
             {{ form_end(newItemForm) }}

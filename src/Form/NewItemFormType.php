@@ -3,10 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Item;
+use App\Enum\ItemCategory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\All;
@@ -54,6 +56,25 @@ class NewItemFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+            ])
+            ->add('category', ChoiceType::class, [
+                'mapped' => true,
+                'required' => true,
+                'choices' => [
+                    'Darbo įrankiai' => ItemCategory::WORK,
+                    'Stalo įrankiai' => ItemCategory::TABLE,
+                    'Meno įrankiai' => ItemCategory::ARTS,
+                    'Žemės ūkio įrankiai' => ItemCategory::AGRO,
+                    'Laisvalaikio įrankiai' => ItemCategory::LEASURE,
+                    'Kiti įrankiai' => ItemCategory::OTHER,
+                ],
+                'expanded' => false,
+                'multiple' => false,
+                // 'constraints' => [
+                //     new Length([
+                //         'max' => 4096,
+                //     ]),
+                // ],
             ])
             ->add('images', FileType::class, [
                 'mapped' => false,

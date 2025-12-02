@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ItemCategory;
 use App\Enum\ItemStatus;
 use App\Repository\ItemRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -56,6 +57,9 @@ class Item
 
     #[ORM\Column(enumType: ItemStatus::class)]
     private ?ItemStatus $status = null;
+
+    #[ORM\Column(enumType: ItemCategory::class)]
+    private ?ItemCategory $category = null;
 
     public function __construct()
     {
@@ -227,6 +231,18 @@ class Item
     public function setStatus(ItemStatus $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCategory(): ?ItemCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(ItemCategory $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

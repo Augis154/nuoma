@@ -9,14 +9,35 @@
     <div class="container mt-4">
         <h1>{{ user.username }} - Įrankiai nuomai</h1>
 
-        <form class="d-flex justify-content-end mt-4" role="search">
-            <div class="input-group" style="width: 300px;">
-                <input class="form-control form-control-md" type="search" name="q" placeholder="Ieškoti..." aria-label="Search" />
-                <button class="btn btn-primary" type="submit">
-                    {# <i class="fa-solid fa-magnifying-glass search-icon"></i> #}
-                    <i class="bi bi-search search-icon"></i>
-                </button>
+
+        <form class="row align-items-end mt-4" >
+            {# <div class="row align-items-start"> #}
+            <div class="col">
+                {# <div class="mb-3"> #}
+                <label for="category" class="form-label">Kategorija</label>
+                <select class="form-select" id="category" name="category" onchange="this.form.submit()">
+                    <option value="">Visos kategorijos</option>
+                    <option value="work" {% if app.request.get('category') == 'work' %}selected{% endif %}>Darbo įrankiai</option>
+                    <option value="table" {% if app.request.get('category') == 'table' %}selected{% endif %}>Stalo įrankiai</option>
+                    <option value="arts" {% if app.request.get('category') == 'arts' %}selected{% endif %}>Meno įrankiai</option>
+                    <option value="agro" {% if app.request.get('category') == 'agro' %}selected{% endif %}>Žemės ūkio įrankiai</option>
+                    <option value="leasure" {% if app.request.get('category') == 'leasure' %}selected{% endif %}>Laisvalaikio įrankiai</option>
+                    <option value="other" {% if app.request.get('category') == 'other' %}selected{% endif %}>Kiti įrankiai</option>
+                </select>
+                {# </div> #}
             </div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col" style="display: contents">
+                <div class="input-group" style="width: 300px;" role="search">
+                    <input class="form-control form-control-md" type="search" name="q" placeholder="Ieškoti..." aria-label="Search" />
+                    <button class="btn btn-primary" type="submit">
+                        {# <i class="fa-solid fa-magnifying-glass search-icon"></i> #}
+                        <i class="bi bi-search search-icon"></i>
+                    </button>
+                </div>
+            </div>
+            {# </div> #}
         </form>
 
         <div class="row row-cols-4 justify-content-start">
