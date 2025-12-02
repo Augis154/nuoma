@@ -4,11 +4,12 @@ namespace App\Repository;
 
 use App\Entity\Item;
 use App\Entity\User;
+use App\Enum\ItemStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Item>
+ * @extends ServiceEntityRepository<\App\Entity\Item>
  */
 class ItemRepository extends ServiceEntityRepository
 {
@@ -20,6 +21,8 @@ class ItemRepository extends ServiceEntityRepository
     public function findAll(): array
     {
         return $this->createQueryBuilder('i')
+            ->andWhere('i.status = :status')
+            ->setParameter('status', ItemStatus::AVAILABLE)
             ->orderBy('i.created_at', 'DESC')
             ->getQuery()
             ->getResult();
@@ -29,7 +32,9 @@ class ItemRepository extends ServiceEntityRepository
     {
          return $this->createQueryBuilder('i')
             ->andWhere('i.created_by = :created_by')
+            // ->andWhere('i.status = :status')
             ->setParameter('created_by', $created_by->getId(), 'uuid')
+            // ->setParameter('status', ItemStatus::AVAILABLE)
             ->orderBy('i.created_at', 'DESC')
             ->getQuery()
             ->getResult();
@@ -39,7 +44,9 @@ class ItemRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('i')
             ->andWhere('i.name LIKE :term OR i.description LIKE :term')
+            // ->andWhere('i.status = :status')
             ->setParameter('term', '%' . $term . '%')
+            // ->setParameter('status', ItemStatus::AVAILABLE)
             ->orderBy('i.created_at', 'DESC');
 
         if ($created_by) {
@@ -48,6 +55,17 @@ class ItemRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function findByLessee(User $lessee): array
+    {
+        return $this->createQueryBuilder('i')
+            ->join('i.leases', 'l')
+            ->andWhere('l.lessee = :lessee')
+            ->setParameter('lessee', $lessee->getId(), 'uuid')
+            ->orderBy('l.created_at', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

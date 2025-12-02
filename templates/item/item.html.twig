@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Objektas {{ item.name }}
+    Įrankis
+    {{ item.name }}
 {% endblock %}
 
 {% block body %}
@@ -11,7 +12,7 @@
         <div id="imageCarousel" class="carousel slide" style="width: 400px; margin-bottom: 1rem;" data-bs-ride="carousel">
             <div class="carousel-inner">
                 {% for image in item.images %}
-                <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
+                    <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
                         <img src="{{ asset('uploads/images/' ~ image) }}" alt="Image of {{ item.name }}" style="width: 400px; height: 300px; object-fit: cover;" />
                     </div>
                 {% endfor %}
@@ -20,7 +21,7 @@
             {% if (item.images|length) > 1 %}
                 <div class="carousel-indicators">
                     {% for image in item.images %}
-                    <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.index0 == 0 %}active{% endif %}" aria-current="true" aria-label="Image {{ loop.index }}"></button>
+                        <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.index0 == 0 %}active{% endif %}" aria-current="true" aria-label="Image {{ loop.index }}"></button>
                     {% endfor %}
                 </div>
 
@@ -44,6 +45,12 @@
             <p style="margin: 0;">Atnaujinta: {{ item.updatedAt|date('Y-m-d H:i:s') }}</p>
         </div>
 
+        {% if app.user and app.user != item.createdBy and item.status == constant('App\\Enum\\ItemStatus::AVAILABLE') %}
+            <div class="mt-4">
+                <a href="{{ path('app_item_lease', { id: item.id }) }}" class="btn btn-primary">Nuomuotis</a>
+            </div>
+        {% endif %}
+
         <div class="mt-4">
             <h4>Atsiliepimai</h4>
             {% for review in item.reviews %}
@@ -53,23 +60,27 @@
                     </p>
                 </div>
             {% else %}
-                <p>Nėra atsiliepimų apie šį objektą.</p>
+                <p>Nėra atsiliepimų apie šį įrankį.</p>
             {% endfor %}
         </div>
 
         {% if app.user %}
-            <div class="mt-4">
-                <h4>Palikti atsiliepimą</h4>
-                {{ form_start(reviewForm) }}
-                {{ form_row(reviewForm.text, { label: 'Jūsų atsiliepimas' }) }}
+            {% if app.user != item.createdBy %}
+                <div class="mt-4">
+                    <h4>Palikti atsiliepimą</h4>
+                    {{ form_start(reviewForm) }}
+                    {{ form_row(reviewForm.text, { label: 'Jūsų atsiliepimas' }) }}
 
-                <button type="submit" class="btn btn-primary">Siųsti</button>
-                {{ form_end(reviewForm) }}
-            </div>
+                    <button type="submit" class="btn btn-primary">Siųsti</button>
+                    {{ form_end(reviewForm) }}
+                </div>
+            {% endif %}
         {% else %}
             <p>
-                Norėdami palikti atsiliepimą, <a href="{{ path('app_login') }}">prisijunkite</a>.
-            </p>
-        {% endif %}
+                Norėdami palikti atsiliepimą, <a href="
+                {{ path('app_login') }}
+            ">prisijunkite</a>.
+        </p>
+    {% endif %}
     </div>
 {% endblock %}

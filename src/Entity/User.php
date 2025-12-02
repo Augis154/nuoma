@@ -57,10 +57,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
     #[ORM\OneToMany(targetEntity: Item::class, mappedBy: 'created_by', orphanRemoval: true)]
     private Collection $items;
 
+    /**
+     * @var Collection<int, Lease>
+     */
+    #[ORM\OneToMany(targetEntity: Lease::class, mappedBy: 'lessee')]
+    private Collection $leases;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->items = new ArrayCollection();
+        $this->leases = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -226,6 +233,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
             // set the owning side to null (unless already changed)
             if ($item->getCreatedBy() === $this) {
                 $item->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lease>
+     */
+    public function getLeases(): Collection
+    {
+        return $this->leases;
+    }
+
+    public function addLease(Lease $lease): static
+    {
+        if (!$this->leases->contains($lease)) {
+            $this->leases->add($lease);
+            $lease->setLessee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLease(Lease $lease): static
+    {
+        if ($this->leases->removeElement($lease)) {
+            // set the owning side to null (unless already changed)
+            if ($lease->getLessee() === $this) {
+                $lease->setLessee(null);
             }
         }
 

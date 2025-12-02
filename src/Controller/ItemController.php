@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Item;
+use App\Entity\Lease;
 use App\Entity\Review;
+use App\Form\LeaseFormType;
 use App\Form\NewItemFormType;
 use App\Form\ReviewFormType;
 use App\Repository\ItemRepository;
@@ -14,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Enum\ItemStatus;
 
 final class ItemController extends AbstractController
 {
@@ -56,6 +59,38 @@ final class ItemController extends AbstractController
         return $this->render('item/item.html.twig', [
             'item' => $item,
             'reviewForm' => $reviewForm,
+        ]);
+    }
+
+    #[Route('/objects/{id}/lease', name: 'app_item_lease')]
+    public function lease(Item $item, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $lease = new Lease();
+        $leaseForm = $this->createForm(LeaseFormType::class, $lease);
+        $leaseForm->handleRequest($request);
+
+        if ($leaseForm->isSubmitted() && $leaseForm->isValid()) {
+            $item->setStatus(ItemStatus::LEASED);
+            
+            $lease->setItem($item);
+            $lease->setLessee($this->getUser());
+            
+            $lease->setReturned(false);
+            $lease->setCreatedAt(new \DateTimeImmutable());
+            $lease->setUpdatedAt(new \DateTimeImmutable());
+
+            $lease->setLeasedFrom($leaseForm->get('from')->getData());
+            $lease->setLeasedTo($leaseForm->get('to')->getData());
+
+            $entityManager->persist($lease);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_item', ['id' => $item->getId()]);
+        }
+
+        return $this->render('item/lease.html.twig', [
+            'item' => $item,
+            'leaseForm' => $leaseForm,
         ]);
     }
 
@@ -109,5 +144,18 @@ final class ItemController extends AbstractController
         }
 
         return $this->redirectToRoute('app_items');
+    }
+
+    #[Route('/object/{id}', name: 'app_item_set_returned', methods: ['POST'])]
+    public function setReturned(Request $request, Item $item, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_LENDER');
+
+        if ($this->isCsrfTokenValid('set_returned' . $item->getId(), $request->request->get('_token'))) {
+            $item->setStatus(ItemStatus::AVAILABLE);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_user_objects', ['id' => $this->getUser()->getUserIdentifier()]);
     }
 }

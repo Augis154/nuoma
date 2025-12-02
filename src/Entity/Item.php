@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ItemStatus;
 use App\Repository\ItemRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -47,9 +48,19 @@ class Item
     #[ORM\JoinColumn(nullable: false)]
     private ?User $created_by = null;
 
+    /**
+     * @var Collection<int, Lease>
+     */
+    #[ORM\OneToMany(targetEntity: Lease::class, mappedBy: 'item')]
+    private Collection $leases;
+
+    #[ORM\Column(enumType: ItemStatus::class)]
+    private ?ItemStatus $status = null;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+        $this->leases = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -174,6 +185,48 @@ class Item
     public function setCreatedBy(?User $created_by): static
     {
         $this->created_by = $created_by;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lease>
+     */
+    public function getLeases(): Collection
+    {
+        return $this->leases;
+    }
+
+    public function addLease(Lease $lease): static
+    {
+        if (!$this->leases->contains($lease)) {
+            $this->leases->add($lease);
+            $lease->setItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLease(Lease $lease): static
+    {
+        if ($this->leases->removeElement($lease)) {
+            // set the owning side to null (unless already changed)
+            if ($lease->getItem() === $this) {
+                $lease->setItem(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStatus(): ?ItemStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(ItemStatus $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\EditUserFormType;
 use App\Repository\ItemRepository;
+use App\Repository\LeaseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,6 +61,23 @@ final class UserController extends AbstractController
         }
 
         return $this->render('user/items.html.twig', [
+            'user' => $user,
+            'items' => $items,
+        ]);
+    }
+
+    #[Route('/user/{id}/leases', name: 'app_user_leases')]
+    public function leases(Request $request, User $user, ItemRepository $itemRepository, LeaseRepository $leaseRepository): Response
+    {
+        $items = $itemRepository->findByLessee($user);
+
+        // if ($searchTerm = $request->query->get('q')) {
+        //     $items = $itemRepository->search($searchTerm, $user);
+        // } else {
+        //     $items = $itemRepository->findByCreatedBy($user);
+        // }
+
+        return $this->render('user/leases.html.twig', [
             'user' => $user,
             'items' => $items,
         ]);

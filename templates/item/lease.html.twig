@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Išsinuomoti įrankį
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4" style="display: flex; flex-direction: column; align-items: center;">
+        <h1>Išsinuomoti įrankį</h1>
+
+        <div class="container-sm mt-4" style="max-width: 600px;">
+            {{ form_start(leaseForm) }}
+            {# <div class="mb-3" style="display: flex; gap: 1rem;">{{ form_row(leaseForm.name, { label: 'Pavadinimas' }) }}
+
+            {{ form_row(leaseForm.price, { label: 'Kaina' }) }}
+            </div>
+            {{ form_row(leaseForm.images, { label: 'Nuotraukos (JPEG arba PNG formatas)' }) }}
+            {{ form_row(leaseForm.description, { label: 'Aprašymas' }) }} #}
+
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(leaseForm.from, { label: 'Nuo' }) }}
+                </div>
+                <div class="col">
+                    {{ form_row(leaseForm.to, { label: 'Iki' }) }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Nuomotis</button>
+            {{ form_end(leaseForm) }}
+        </div>
+    </div>
+{% endblock %}
