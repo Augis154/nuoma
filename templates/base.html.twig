@@ -37,6 +37,11 @@
 
                 <ul class="navbar-nav mb-2 mb-lg-0" role="search">
                     {% if app.user %}
+                        {% if is_granted('ROLE_MODERATOR') %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_flags') }}">Pranešimai</a>
+                            </li>
+                        {% endif %}
                         {% if is_granted('ROLE_LENDER') %}
                             <li class="nav-item">
                                 {% if app.request.attributes.get('_route') == 'app_user_objects' and app.user == user %}

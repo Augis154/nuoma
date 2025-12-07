@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Pranešimai
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Pranešimai</h1>
+
+        <form class="container mt-4" method="post" action="{{ path('app_flag_delete_all') }}" onsubmit="return confirm('Ar tikrai norite panaikinti visus pranešimus?');">
+            <button class="btn btn-danger" type="submit" title="Panaikinti visus pranešimus">
+                Panaikinti viską
+            </button>
+        </form>
+
+        <div class="mt-4" style="width: 400px;">
+            {% for flag in flags %}
+                <div class="mb-4 p-3 border" style="position: relative;">
+                    <form method="post" action="{{ path('app_flag_delete', { id: flag.id }) }}" style="position: absolute; bottom: 10px; right: 10px;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ flag.id) }}">
+                        <button class="btn btn-danger" type="submit" title="Panaikinti pranešimą">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                    {% if flag.review is not null %}
+                        <h4>Komentaras</h4>
+                        <strong>{{ flag.review.createdBy.username }}: </strong>{{ flag.review.text }}
+                    {% else %}
+                        <h4>Nuotrauka</h4>
+                        <img src="{{ asset('uploads/images/' ~ flag.image) }}" alt="Flagged Image" style="width: 200px; height: 150px; object-fit: cover;">
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

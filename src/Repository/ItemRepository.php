@@ -84,6 +84,20 @@ class ItemRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function deleteImage(string $image): ?Item
+    {
+        $items = $this->findAll();
+        foreach ($items as $item) {
+            if (in_array($image, $item->getImages(), true)) {
+                $images = $item->getImages();
+                $images = array_filter($images, fn ($img) => $img !== $image);
+                $item->setImages(array_values($images));
+                return $item;
+            }
+        }
+        return null;
+    }
+
     //    /**
     //     * @return Item[] Returns an array of Item objects
     //     */

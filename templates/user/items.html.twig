@@ -44,7 +44,9 @@
             {% for item in items %}
                 <div class="col">
                     <div class="card" style="width: 18rem; margin-top: 2rem; {% if app.user != item.createdBy and item.status != constant('App\\Enum\\ItemStatus::AVAILABLE') %} background-color: light-grey; z-index: 100; {% endif %}">
-                        <img src="{{ asset('uploads/images/' ~ item.images[0]) }}" class="card-img-top" alt="Image of {{ item.name }}" style="height: 200px; object-fit: cover; {% if user != item.createdBy and item.status != constant('App\\Enum\\ItemStatus::AVAILABLE') %} opacity: 0.6; {% endif %}" />
+                        {% if item.images|length > 0 %}
+                            <img src="{{ asset('uploads/images/' ~ item.images[0]) }}" class="card-img-top" alt="Image of {{ item.name }}" style="height: 200px; object-fit: cover; {% if user != item.createdBy and item.status != constant('App\\Enum\\ItemStatus::AVAILABLE') %} opacity: 0.6; {% endif %}" />
+                        {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ item.name }}</h5>
                             <h6 class="card-subtitle mb-2 text-body-secondary">Kaina: {{ item.price }} EUR</h6>
@@ -80,7 +82,7 @@
 
                                     <form method="delete" action="{{ path('app_item_delete', { id: item.id }) }}" onsubmit="return confirm('Ar tikrai norite ištrinti šį įrankį?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
-                                        <button class="btn btn-danger" type="submit">
+                                        <button class="btn btn-danger" type="submit" title="Panaikinti">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>

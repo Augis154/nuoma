@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Flag;
+use App\Entity\Item;
 use App\Form\EditUserFormType;
+use App\Repository\FlagRepository;
 use App\Repository\ItemRepository;
 use App\Repository\LeaseRepository;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,5 +87,46 @@ final class UserController extends AbstractController
             'user' => $user,
             'items' => $items,
         ]);
+    }
+
+    #[IsGranted('ROLE_LENDER')]
+    #[Route('/flags', name: 'app_flags')]
+    public function flags(Request $request, FlagRepository $flagRepository): Response
+    {
+        $flags = $flagRepository->findAll();
+
+        return $this->render('user/flags.html.twig', [
+            'flags' => $flags,
+        ]);
+    }
+
+    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/flags/delete', name: 'app_flag_delete_all', methods: ['POST'])]
+    public function deleteFlags(Request $request, FlagRepository $flagRepository, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
+    {
+        foreach ($flagRepository->findAll() as $flag) {
+            $this->deleteFlag($request, $flag, $entityManager, $fileUploader);
+        }
+        return $this->redirectToRoute('app_flags');
+    }
+
+    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/flag/{id}', name: 'app_flag_delete', methods: ['POST'])]
+    public function deleteFlag(Request $request, Flag $flag, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
+    {
+        if ($flag) {
+            if ($flag->getReview()) {
+                $entityManager->remove($flag->getReview());
+            }
+            else {
+                $image = $flag->getImage();
+                $entityManager->getRepository(Item::class)->deleteImage($image);
+                $fileUploader->delete($image);
+            }
+            $entityManager->remove($flag);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_flags');
     }
 }

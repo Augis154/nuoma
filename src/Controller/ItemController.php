@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Item;
 use App\Entity\Lease;
 use App\Entity\Review;
+use App\Entity\Flag;
 use App\Form\LeaseFormType;
 use App\Form\NewItemFormType;
 use App\Form\ReviewFormType;
@@ -174,7 +175,7 @@ final class ItemController extends AbstractController
     }
 
     #[Route('/object/{id}', name: 'app_item_set_returned', methods: ['POST'])]
-    public function setReturned(Request $request, Item $item, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
+    public function setReturned(Request $request, Item $item, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_LENDER');
 
@@ -184,5 +185,31 @@ final class ItemController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_objects', ['id' => $this->getUser()->getUserIdentifier()]);
+    }
+
+    #[Route('/object/{id}/flag/review/{reviewId}', name: 'app_flag_review', methods: ['POST'])]
+    public function flagReview(Item $item, string $reviewId, EntityManagerInterface $entityManager): Response
+    {
+        $review = $entityManager->getRepository(Review::class)->find($reviewId);
+
+        $flag = new Flag();
+        $flag->setReview($review);
+
+        $entityManager->persist($flag);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_item', ['id' => $item->getId()]);
+    }
+    
+    #[Route('/object/{id}/flag/image/{path}', name: 'app_flag_image', methods: ['POST'])]
+    public function flagImage(Item $item, string $path, EntityManagerInterface $entityManager): Response
+    {
+        $flag = new Flag();
+        $flag->setImage($path);
+
+        $entityManager->persist($flag);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_item', ['id' => $item->getId()]);
     }
 }

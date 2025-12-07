@@ -9,39 +9,58 @@
     <div class="container mt-4">
         <h1>{{ item.name }}</h1>
 
-        <div id="imageCarousel" class="carousel slide" style="width: 400px; margin-bottom: 1rem;" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% for image in item.images %}
-                    <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
-                        <img src="{{ asset('uploads/images/' ~ image) }}" alt="Image of {{ item.name }}" style="width: 400px; height: 300px; object-fit: cover;" />
+        <div class="row align-items-start mt-4">
+            <div class="col-auto">
+                {% if item.images|length > 0 %}
+                    <div id="imageCarousel" class="carousel slide" style="width: 400px; margin-bottom: 1rem;" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for image in item.images %}
+                                <form class="carousel-item {% if loop.index0 == 0 %}active{% endif %}" style="position: relative;" method="post">
+                                    <img src="{{ asset('uploads/images/' ~ image) }}" alt="Image of {{ item.name }}" style="width: 400px; height: 300px; object-fit: cover;">
+
+                                    <button type="submit" style="position: absolute; bottom: 5px; right: 5px; color: red; border: none; background: light-gray; padding: 0; width: 1.5em; height: 1.5em; z-index: 10;" formaction="{{ path('app_flag_image', { id: item.id, path: image }) }}" title="Pranešti kaip netinkamą">
+                                        <i class="bi bi-flag"></i>
+                                    </button>
+                                </form>
+                            {% endfor %}
+                        </div>
+
+                        {% if (item.images|length) > 1 %}
+                            <div class="carousel-indicators">
+                                {% for image in item.images %}
+                                    <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.index0 == 0 %}active{% endif %}" aria-current="true" aria-label="Image {{ loop.index }}"></button>
+                                {% endfor %}
+                            </div>
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        {% endif %}
                     </div>
-                {% endfor %}
+                {% else %}
+                    <p>Šiam įrankiui nėra pridėtų nuotraukų.</p>
+                {% endif %}
             </div>
+            <div class="col">
+                <p>Kaina: {{ item.price }} EUR</p>
+                <p>Kategorija: {{ categoryName }}</p>
 
-            {% if (item.images|length) > 1 %}
-                <div class="carousel-indicators">
-                    {% for image in item.images %}
-                        <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.index0 == 0 %}active{% endif %}" aria-current="true" aria-label="Image {{ loop.index }}"></button>
-                    {% endfor %}
-                </div>
+                {% if item.description|length > 0 %}
+                    <p>Aprašymas: {{ item.description }}</p>
+                {% endif %}
 
-                <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            {% endif %}
+                {% if app.user and app.user != item.createdBy and item.status == constant('App\\Enum\\ItemStatus::AVAILABLE') %}
+                    <div class="mt-4">
+                        <a href="{{ path('app_item_lease', { id: item.id }) }}" class="btn btn-primary">Nuomuotis</a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-
-        <p>Kaina: {{ item.price }} EUR</p>
-        <p>Kategorija: {{ categoryName }}</p>
-
-        {% if item.description|length > 0 %}
-            <p>Aprašymas: {{ item.description }}</p>
-        {% endif %}
 
         <div class="text-body-secondary" style="font-size: 0.9rem;">
             <p style="margin: 0;">Sukūrė: <a href="{{ path('app_user_objects', { id: item.createdBy.id }) }}">{{ item.createdBy.username }}</a></p>
@@ -49,20 +68,17 @@
             <p style="margin: 0;">Atnaujinta: {{ item.updatedAt|date('Y-m-d H:i:s') }}</p>
         </div>
 
-        {% if app.user and app.user != item.createdBy and item.status == constant('App\\Enum\\ItemStatus::AVAILABLE') %}
-            <div class="mt-4">
-                <a href="{{ path('app_item_lease', { id: item.id }) }}" class="btn btn-primary">Nuomuotis</a>
-            </div>
-        {% endif %}
-
         <div class="mt-4">
             <h4>Atsiliepimai</h4>
             {% for review in item.reviews %}
-                <div class="review">
+                <form class="review" style="width: 500px" method="post">
                     <p>
-                        <strong>{{ review.createdBy.username }}</strong>: {{ review.text }}
+                        <button type="submit" style="color: red; border: none; background: light-gray; padding: 0; margin-right: 5px; width: 1.5em; height: 1.5em;" formaction="{{ path('app_flag_review', { id: item.id, reviewId: review.id }) }}" title="Pranešti kaip netinkamą">
+                            <i class="bi bi-flag"></i>
+                        </button>
+                        <strong>{{ review.createdBy.username }}: </strong>{{ review.text }}
                     </p>
-                </div>
+                </form>
             {% else %}
                 <p>Nėra atsiliepimų apie šį įrankį.</p>
             {% endfor %}
@@ -70,7 +86,7 @@
 
         {% if app.user %}
             {% if app.user != item.createdBy %}
-                <div class="mt-4">
+                <div class="mt-4" style="width: 500px">
                     <h4>Palikti atsiliepimą</h4>
                     {{ form_start(reviewForm) }}
                     {{ form_row(reviewForm.text, { label: 'Jūsų atsiliepimas' }) }}
