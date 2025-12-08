@@ -89,7 +89,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_LENDER')]
+    #[IsGranted('ROLE_MODERATOR')]
     #[Route('/flags', name: 'app_flags')]
     public function flags(Request $request, FlagRepository $flagRepository): Response
     {

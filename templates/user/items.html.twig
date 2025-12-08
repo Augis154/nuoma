@@ -68,7 +68,7 @@
 
                             {% if app.user == user %}
                                 <div class="container mt-2" style="display: flex; flex-direction: row; gap: 0.5rem; padding-left: 0;">
-                                    <a href="{{ path('app_item', { id: item.id }) }}" class="btn btn-secondary"><i class="bi bi-pen"></i></a>
+                                    <a href="{{ path('app_item_edit', { id: item.id }) }}" class="btn btn-secondary"><i class="bi bi-pen"></i></a>
 
                                     {% if item.status != constant('App\\Enum\\ItemStatus::AVAILABLE') %}
                                         <form method="post" action="{{ path('app_item_set_returned', { id: item.id }) }}">

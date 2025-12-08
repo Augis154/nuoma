@@ -25,6 +25,26 @@ class FlagRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByReviewId($reviewId): ?Flag
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.review = :reviewId')
+            ->setParameter('reviewId', $reviewId)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findByImage($image): ?Flag
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.image = :image')
+            ->setParameter('image', $image)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     //    /**
     //     * @return Flag[] Returns an array of Flag objects
     //     */

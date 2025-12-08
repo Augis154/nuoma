@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Redaguoti įrankį
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4" style="display: flex; flex-direction: column; align-items: center;">
+        <h1>Redaguoti įrankį</h1>
+
+        <div class="container-sm mt-4" style="max-width: 600px;">
+            {{ form_start(editItemForm) }}
+            <div class="mb-3" style="display: flex; gap: 1rem;">{{ form_row(editItemForm.name, { label: 'Pavadinimas' }) }}
+                {{ form_row(editItemForm.price, { label: 'Kaina' }) }}
+            </div>
+
+            <div>
+                <label class="form-label">Esamos nuotraukos:</label><br/>
+                {% for image in images %}
+                    <img src="{{ asset('uploads/images/' ~ image) }}" alt="Image" style="max-width: 100px; max-height: 100px; margin-right: 10px;">
+                {% endfor %}
+            </div>
+
+            {{ form_row(editItemForm.images, { label: 'Nuotraukos (JPEG arba PNG formatas)' }) }}
+            {{ form_row(editItemForm.description, { label: 'Aprašymas' }) }}
+            {{ form_row(editItemForm.category, { label: 'Kategorija' }) }}
+            <button type="submit" class="btn btn-primary">Išsaugoti</button>
+            {{ form_end(editItemForm) }}
+        </div>
+    </div>
+{% endblock %}
