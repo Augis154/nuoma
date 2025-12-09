@@ -62,6 +62,11 @@ final class ItemController extends AbstractController
             return $this->redirectToRoute('app_item', ['id' => $item->getId()]);
         }
 
+        $alredyLended = $entityManager->getRepository(Lease::class)->findBy([
+            'item' => $item,
+            'lessee' => $this->getUser(),
+        ]);
+
         switch ($item->getCategory()) {
             case ItemCategory::WORK:
                 $categoryName = 'Darbo įrankiai';
@@ -89,6 +94,7 @@ final class ItemController extends AbstractController
             'item' => $item,
             'reviewForm' => $reviewForm,
             'categoryName' => $categoryName,
+            'alredyLended' => $alredyLended,
         ]);
     }
 

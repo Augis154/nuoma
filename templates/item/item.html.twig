@@ -107,7 +107,7 @@
         </div>
 
         {% if app.user %}
-            {% if app.user != item.createdBy %}
+            {% if app.user != item.createdBy and alredyLended is not empty %}
                 <div class="mt-4" style="width: 500px">
                     <h4>Palikti atsiliepimą</h4>
                     {{ form_start(reviewForm) }}
